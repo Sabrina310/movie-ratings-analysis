@@ -1,3 +1,5 @@
+Group members: Tianyu Su, Ruohan Sun, Kaixin Ma, Xiaomeng Zhou
+
 # Movie Ratings Across IMDb, Rotten Tomatoes & the Oscars
 
 A database-driven study of audience ratings, popularity, critic scores, and Oscar recognition for movies released in **2016–2025**. Originally a **CPSC 368 Group 1 course project**, implemented with Oracle SQL and MongoDB aggregation pipelines; reorganized here as a reproducible portfolio repository.
