@@ -1,0 +1,154 @@
+{
+  "pipeline1": [
+    {
+      "$match": {
+        "year": {
+          "$gte": 2016,
+          "$lte": 2025
+        },
+        "imdb.rating": {
+          "$exists": true
+        },
+        "rotten.ratings.audience": {
+          "$exists": true
+        }
+      }
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "title": 1,
+        "year": 1,
+        "averageRating": "$imdb.rating",
+        "audience_score": "$rotten.ratings.audience"
+      }
+    }
+  ],
+  "pipeline2": [
+    {
+      "$match": {
+        "year": {
+          "$gte": 2016,
+          "$lte": 2025
+        },
+        "imdb.rating": {
+          "$exists": true
+        },
+        "imdb.votes": {
+          "$exists": true
+        },
+        "genres": {
+          "$exists": true
+        },
+        "oscar": {
+          "$exists": true
+        }
+      }
+    },
+    {
+      "$unwind": "$genres"
+    },
+    {
+      "$addFields": {
+        "popularity_bin": {
+          "$switch": {
+            "branches": [
+              {
+                "case": {
+                  "$lt": [
+                    "$imdb.votes",
+                    10000
+                  ]
+                },
+                "then": "2K-10K"
+              },
+              {
+                "case": {
+                  "$lt": [
+                    "$imdb.votes",
+                    100000
+                  ]
+                },
+                "then": "10K-100K"
+              },
+              {
+                "case": {
+                  "$lt": [
+                    "$imdb.votes",
+                    1000000
+                  ]
+                },
+                "then": "100K-1M"
+              }
+            ],
+            "default": "1M+"
+          }
+        },
+        "oscar_group": {
+          "$cond": {
+            "if": "$oscar",
+            "then": "Oscar",
+            "else": "No Oscar"
+          }
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": {
+          "genre": "$genres",
+          "popularity_bin": "$popularity_bin",
+          "oscar_group": "$oscar_group"
+        },
+        "avg_imdb_rating": {
+          "$avg": "$imdb.rating"
+        },
+        "movie_count": {
+          "$sum": 1
+        }
+      }
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "genre": "$_id.genre",
+        "popularity_bin": "$_id.popularity_bin",
+        "oscar_group": "$_id.oscar_group",
+        "avg_imdb_rating": 1,
+        "movie_count": 1
+      }
+    },
+    {
+      "$sort": {
+        "genre": 1,
+        "popularity_bin": 1,
+        "oscar_group": 1
+      }
+    }
+  ],
+  "pipeline3": [
+    {
+      "$match": {
+        "year": {
+          "$gte": 2016,
+          "$lte": 2025
+        },
+        "imdb.votes": {
+          "$exists": true
+        },
+        "rotten.ratings.critics": {
+          "$exists": true
+        }
+      }
+    },
+    {
+      "$project": {
+        "_id": 0,
+        "title": 1,
+        "year": 1,
+        "numVotes": "$imdb.votes",
+        "critics_score": "$rotten.ratings.critics"
+      }
+    }
+  ]
+}

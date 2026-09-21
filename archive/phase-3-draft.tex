@@ -1,0 +1,255 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\onehalfspacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    columns=fullflexible,
+    frame=single,
+    showstringspaces=false
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.5em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Phase 3}}\\[0.5em]
+    {\large Group 1}
+\end{center}
+
+\vspace{1em}
+
+\section{Project Overview}
+
+\subsection{Project Summary}
+There are multiple movie platforms and evaluation systems (such as IMDb, Rotten Tomatoes, and major award institutions), each with different standards, audiences, and evaluation criteria. Because of these differences, it is often unclear how much a movie rating actually reflects its overall quality, popularity, or critical recognition. As a result, people may find it difficult to interpret movie ratings in isolation. By combining audience ratings, popularity measures, and award recognition, we aim to better understand what movie ratings represent and how different forms of recognition relate to each other.
+
+\subsection{Overarching Research Question}
+\begin{enumerate}[leftmargin=1.5em]
+    \item For movies released from 2016 to 2025, is there a relationship between the average IMDb rating and the average Rotten Tomatoes audience score?
+    \item For movies released from 2016 to 2025, do films that received Oscar recognition (i.e., were nominated or won at the Academy Awards) receive significantly higher audience ratings on IMDb and Rotten Tomatoes compared to films without any Oscar recognition?
+    \item For movies released from 2016 to 2025, is IMDb popularity (number of user votes) associated with the level of critic engagement on Rotten Tomatoes?
+\end{enumerate}
+
+\section{Dataset Description}
+
+\subsection{Dataset 1: The Oscar Award Dataset}
+
+\paragraph{Source}
+\url{https://www.kaggle.com/datasets/unanimad/the-oscar-award}
+
+\paragraph{Description}
+ The Oscar Award dataset contains historical records of Academy Award nominations and winners, including information such as ceremony year, nomination category, film title, IMDb film identifier, and nominee details. It allows us to identify whether a movie received Oscar recognition through nomination. We use the \texttt{FilmId} field (IMDb \texttt{tconst}) to connect this dataset with the IMDb dataset, enabling us to analyze how Oscar nominations relate to movie popularity and audience ratings.
+
+
+\subsection{Dataset 2: IMDb Dataset}
+
+\paragraph{Source}
+\url{https://datasets.imdbws.com/}
+
+\subsubsection{IMDb Title Basics Dataset}
+
+\paragraph{Description}
+This dataset provides basic information about each movie, including the movie identifier (\texttt{tconst}), the movie title (\texttt{primaryTitle}), and the release year (\texttt{startYear}). These attributes allow us to identify movies released within our study period and serve as the core table for linking other datasets.
+
+\subsubsection{IMDb Ratings Dataset}
+
+\paragraph{Description}
+This dataset provides the IMDb audience evaluation metrics for each movie, including the movie identifier (\texttt{tconst}), the average rating (\texttt{averageRating}) and the number of votes (\texttt{numVotes}). These variables measure audience perception and engagement, which are central to our research questions.
+
+\subsection{Dataset 3: Rotten Tomatoes Ratings Dataset}
+
+\paragraph{Source}
+\href{https://www.kaggle.com/datasets/matepapava/rotten-tomatoes-critics-and-audience-scores}{Rotten Tomatoes: Critics \& Audience scores}
+
+\paragraph{Description}
+This dataset provides Rotten Tomatoes evaluation metrics for each movie, including the movie title, release year, audience score, and critics score. These variables measure both audience perception and professional critic evaluation, allowing us to compare audience and critic responses to movies and analyze differences between the two rating systems.
+
+\section{Data Preparation}
+
+\subsection{Data Reconciliation (How datasets are combined)}
+The three datasets are combined using the \textbf{IMDb movie identifier (\texttt{tconst})} as the key.
+
+\begin{itemize}[leftmargin=1.5em]
+    \item The \textbf{Oscar dataset} contains the \texttt{FilmId} for each nominated film.
+    \item The \textbf{IMDb dataset} contains the same identifier (\texttt{tconst}) representing the same movie.
+    \item The \textbf{Rotten Tomatoes dataset} is matched using movie titles and years that correspond to IMDb records.
+\end{itemize}
+
+We use an \textbf{inner join} between datasets to ensure that only movies appearing in all relevant datasets are included in the final analysis. This guarantees that each movie has IMDb rating data, Rotten Tomatoes audience data, and Oscar nomination information.
+
+\subsection{Data Cleaning Summary}
+
+\subsubsection{Oscar Award Dataset}
+First, we retained only the columns relevant to our research questions: \texttt{Category}, \texttt{Year}, \texttt{Film}, and \texttt{FilmId}. Second, rows with missing \texttt{FilmId} values were removed because these entries cannot be linked to the IMDb dataset. Since our analysis requires combining datasets using IMDb \texttt{tconst}, these rows would not be useful. Third, the dataset was filtered to include only films released between 2016 and 2025, which aligns with the scope of our research questions. Finally, duplicate films were removed using the \texttt{FilmId} attribute to ensure that each movie appears only once in the cleaned dataset. After cleaning, the Oscar dataset was reduced from 12,014 rows to 494 rows. The cleaned dataset was saved as \texttt{clean\_oscar.csv} for use in the database implementation phase.
+
+\subsubsection{IMDb Dataset}
+First, we use Python to convert the missing values represented as \texttt{"\textbackslash\textbackslash N"} in the original IMDb dataset into appropriate missing values (\texttt{NA}). This standardization allows for the correct handling of missing values during the filtering process. Secondly, convert the \texttt{startYear}, \texttt{averageRating}, and \texttt{numVotes} columns to numeric data types to ensure appropriate comparison and filtering operations. Thirdly, we filter the dataset to only include rows with the title type ``Movie'' and a release year between 2016 and 2025. This ensures that the dataset focuses on recent films related to the scope of our research. Next, we remove the rows in the key columns (\texttt{primaryTitle}, \texttt{startYear}, \texttt{averageRating}, and \texttt{numVotes}) that are missing values, so as to avoid encountering null values in the analysis. To avoid studying unrepresentative films that have received few audience votes, we also filtered the \texttt{numVotes} column, retaining only films that have received at least 2,000 votes. This helps ensure that the rating is based on a large number of meaningful user reviews. Finally, we use the movie id (\texttt{tconst}) key to delete duplicate records. This ensures that each film appears only once in the final dataset. Moreover, by converting all titles to lowercase and removing punctuation marks to match for other datasets, the consistency of movie titles is ensured. Then export the cleaned dataset as a CSV file named \texttt{movies\_filters.csv}. This file is used to load data into the Oracle database in the next stage of the project.
+
+\subsubsection{Rotten Tomatoes Dataset}
+First, we load the Rotten Tomatoes dataset from the JSON file and convert it into a pandas DataFrame for processing. Only retain the relevant columns (\texttt{title}, \texttt{year}, \texttt{audience\_score}, \texttt{critics\_score} and \texttt{type}), and delete the rows with missing values to ensure that all records contain complete analysis information. Secondly, the dataset was filtered and only included movies released from 2016 to 2025. Thirdly, re-scale them by dividing the original values of the variables \texttt{audience\_score} and \texttt{critics\_score} by 10. This will standardize the score format, thus making the values fall within the range of 0 to 10, which is equivalent to the rating method of IMDb. Next, we filter the dataset and only retain the records whose \texttt{type} attribute is equal to ``movie''. This will delete entries that correspond to other media types, such as TV series or other non-film content. Finally, the movie titles were standardized to enhance consistency among the datasets. All titles have been converted to lowercase, and any subtitle information following the colon (\texttt{:}) has been removed. This standardization helps improve the accuracy when matching movie titles on Rotten Tomatoes and IMDb. Then export the cleaned dataset as a CSV file named \texttt{clean\_rotten\_tomatoes}. The cleaned dataset is later used to load the data into the Oracle database and perform SQL-based analysis.
+
+\section{Oracle Database Design}
+
+\subsection{Schema Design}
+
+\paragraph{\texttt{IMDb\_Movies(tconst, primaryTitle, startYear, averageRating, numVotes, genere)}}:
+
+This relation stores movie information from the IMDb dataset including film identifier, title, release year, rating, and number of user votes.
+
+\paragraph{\texttt{Oscar\_Awards(FilmId, Year, Film)}}:
+
+\texttt{FilmId} is a foreign key referring to the attribute \texttt{tconst} in 
+
+\texttt{IMDb\_Movies}. This relation records Oscar nominations for films.
+
+\paragraph{\texttt{Rotten\_Tomatoes(title, year, audience\_score, critics\_score)}}:
+
+\texttt{title} and \texttt{year} together form the primary key identifying a movie. 
+
+\texttt{title} and \texttt{year} are foreign keys referring to \texttt{primaryTitle} and \texttt{startYear} in \texttt{IMDb\_Movies}. This relation stores audience and critic scores from Rotten Tomatoes.
+
+\subsection{ER Diagram}
+\textbf{TODO: Insert the ER diagram here.}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{er_diagram.png}
+    \fbox{\parbox{0.8\textwidth}{\centering ER diagram placeholder}}
+    \caption{ER diagram for the Oracle database schema.}
+\end{figure}
+
+\subsection{Additional Constraints Not Shown in the ER Diagram}
+\begin{itemize}[leftmargin=1.5em]
+    \item \texttt{UNIQUE(primaryTitle, startYear)} in \texttt{IMDb\_Movies}.
+    \item Composite primary key \texttt{(title, year)} in \texttt{Rotten\_Tomatoes}.
+    \item Composite foreign key from \texttt{Rotten\_Tomatoes(title, year)} to \texttt{IMDb\_Movies(primaryTitle, startYear)}.
+\end{itemize}
+
+\section{Research Questions, SQL Queries, and Outputs}
+
+\subsection{Research Question 1}
+
+\subsubsection*{Research Question}
+How do the distributions of IMDb ratings and Rotten Tomatoes audience scores compare for movies released between 2016 and 2025?
+
+\subsubsection*{SQL Query}
+\begin{lstlisting}[style=sqlstyle]
+SELECT
+    m.title AS "title",
+    m.startYear AS "startYear",
+    m.averageRating AS "averageRating",
+    r.audience_score AS "audience_score"
+FROM Movies m
+JOIN RottenTomatoes r
+    ON m.title = r.title
+   AND m.startYear = r.year
+WHERE m.startYear BETWEEN 2016 AND 2025;
+\end{lstlisting}
+
+\subsubsection*{Explanation of the Query}
+This query extracts movie-level observations for films released between 2016 and 2025 by joining the \texttt{Movies} table with the \texttt{RottenTomatoes} table on movie title and release year. It returns each matched movie's title, year, IMDb popularity measure (\texttt{numVotes}), and Rotten Tomatoes critic score (\texttt{critics\_score}). By placing \texttt{numVotes} and \texttt{critics\_score} in the same result set for the same films, the output provides the required paired variables to evaluate whether IMDb popularity is associated with critic engagement. This is appropriate for Research Question 3 because the resulting data can be used directly for correlation analysis and visualization (for example, a scatter plot with a fitted trend line).
+
+\subsubsection*{Result Produced by the Code}
+The corresponding visualization is shown below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{question1.png}
+    \caption{Result for Research Question 1.}
+\end{figure}
+
+\subsection{Research Question 2}
+
+\subsubsection*{Research Question}
+Does Oscar recognition significantly predict IMDb audience ratings after controlling for popularity and genre for movies released between 2016--2025?
+
+\subsubsection*{SQL Query}
+\begin{lstlisting}[style=sqlstyle]
+SELECT
+    m.title AS "title",
+    m.startYear AS "startYear",
+    m.averageRating AS "averageRating",
+    m.numVotes AS "numVotes",
+    m.genres AS "genres",
+    o.filmid AS "filmid"
+FROM Movies m
+LEFT JOIN Oscars o
+    ON m.tconst = o.filmid
+WHERE m.startYear BETWEEN 2016 AND 2025;
+\end{lstlisting}
+
+\subsubsection*{Explanation of the Query}
+This query selects movies released between 2016 and 2025 from the \texttt{Movies} table and uses a \texttt{LEFT JOIN} to match records in the \texttt{Oscars} table through \texttt{m.tconst = o.filmid}. The query returns each movie's title, release year, IMDb average rating, number of votes, genre, and matched Oscar film identifier. Because a \texttt{LEFT JOIN} is used, all movies are retained even when no Oscar record exists, in which case \texttt{o.filmid} is null. This output supports the research question by allowing comparison of IMDb ratings between Oscar-recognized and non-recognized movies while also including popularity (\texttt{numVotes}) and genre as control variables.
+
+\subsubsection*{Result Produced by the Code}
+The corresponding visualization is shown below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{question2.png}
+    \caption{Result for Research Question 2.}
+\end{figure}
+
+\subsection{Research Question 3}
+
+\subsubsection*{Research Question}
+For movies released from 2016 to 2025, is IMDb popularity (number of user votes) associated with the level of critic engagement on Rotten Tomatoes?
+
+\subsubsection*{SQL Query}
+\begin{lstlisting}[style=sqlstyle]
+SELECT
+    m.title AS "title",
+    m.startYear AS "startYear",
+    m.numVotes AS "numVotes",
+    r.critics_score AS "critics_score"
+FROM Movies m
+JOIN RottenTomatoes r
+    ON m.title = r.title
+   AND m.startYear = r.year
+WHERE m.startYear BETWEEN 2016 AND 2025;
+\end{lstlisting}
+
+\subsubsection*{Explanation of the Query}
+This query extracts movie-level observations for films released between 2016 and 2025 by joining the \texttt{Movies} table with the \texttt{RottenTomatoes} table on movie title and release year. It returns each matched movie's title, year, IMDb popularity measure (\texttt{numVotes}), and Rotten Tomatoes critic score (\texttt{critics\_score}). By placing \texttt{numVotes} and \texttt{critics\_score} in the same result set for the same films, the output provides the required paired variables to evaluate whether IMDb popularity is associated with critic engagement. This is appropriate for Research Question 3 because the resulting data can be used directly for correlation analysis and visualization.
+
+\subsubsection*{Result Produced by the Code}
+The corresponding visualizations are shown below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{question3_scatter.png}\hfill
+    \includegraphics[width=0.49\textwidth]{question3_boxplot.png}
+    \caption{Result for Research Question 3 (left: scatter plot; right: boxplot).}
+\end{figure}
+
+\section{AI Tool Use Declaration}
+\textbf{TODO: Insert your AI Tool Use Declaration here according to the Project Overview document.}
+
+\end{document}

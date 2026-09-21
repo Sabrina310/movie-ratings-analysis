@@ -1,0 +1,25 @@
+# Local Python environments and caches
+.venv/
+venv/
+cpsc368_env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+# Credentials and editor state
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# Reproducible intermediate / row-level outputs
+data/processed/
+reports/results/*.csv
+reports/results/*.jsonl
+reports/results/oracle/
+reports/results/mongodb/

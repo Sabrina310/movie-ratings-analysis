@@ -1,0 +1,21 @@
+{
+  "input_rows": {
+    "movies": 10147,
+    "oscars": 494,
+    "rotten_tomatoes": 1107
+  },
+  "exact_matched_rt_rows": 787,
+  "matched_oscar_films": 348,
+  "unmatched_oscar_rows": 146,
+  "oscar_year_range": [
+    2016,
+    2024
+  ],
+  "rt_duplicate_title_year_extra_rows": 2,
+  "audience_rating_pearson_r": 0.7172310742010032,
+  "votes_critics_pearson_r": 0.14248524162571788,
+  "log10_votes_critics_pearson_r": 0.07663867071613252,
+  "mean_imdb_with_oscar_record": 7.31867816091954,
+  "mean_imdb_without_oscar_record": 6.132237983467701,
+  "interpretation": "Descriptive associations only; Oscar membership is not winner status. RT scores are rescaled percentages, not the same metric as IMDb."
+}

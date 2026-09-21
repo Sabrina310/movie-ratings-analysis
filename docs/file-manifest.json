@@ -1,0 +1,143 @@
+[
+  {
+    "source": "clean_movies.csv",
+    "destination": "data/input/clean_movies.csv",
+    "sha256": "95df0f30e925f4a5606df0c62e40ebcf5477f839e22f053b5580397c3355a179",
+    "action": "copied"
+  },
+  {
+    "source": "clean_oscar.csv",
+    "destination": "data/input/clean_oscar.csv",
+    "sha256": "43f40241841b89f80ea3bbcb5dc3b60eb76430c83f1e890633284487df8bfbcb",
+    "action": "copied"
+  },
+  {
+    "source": "clean_rotten_tomatoes.csv",
+    "destination": "data/input/clean_rotten_tomatoes.csv",
+    "sha256": "758cce6c28c70dfb2045f5fdde6517b6ddfe26d554967602d669c232481f3704",
+    "action": "copied"
+  },
+  {
+    "source": "data_cleaning/clean_rotten_tomatoes_with_imdb_id_round4.csv",
+    "destination": "data/reference/clean_rotten_tomatoes_with_imdb_id_round4.csv",
+    "sha256": "3629f941d833fb1a02b1eb7e03768443763a8da405b1a5274484b7b9a1a462e4",
+    "action": "copied"
+  },
+  {
+    "source": "data_cleaning/rotten_tomatoes_review_candidates_round4.csv",
+    "destination": "data/reference/rotten_tomatoes_review_candidates_round4.csv",
+    "sha256": "64f731bd368ec1a40420215f0c342e203fe20242e215e46167ca3e3309683a71",
+    "action": "copied"
+  },
+  {
+    "source": "data_cleaning/rotten_tomatoes_unmatched_round4.csv",
+    "destination": "data/reference/rotten_tomatoes_unmatched_round4.csv",
+    "sha256": "b2d5306de05ee77bef6d05233f6a2b2e9950e1a4379e636721640c2c47156a5f",
+    "action": "copied"
+  },
+  {
+    "source": "Formal Report.pdf",
+    "destination": "reports/original/final-report.pdf",
+    "sha256": "9fe179631d81b183253e0227c55fffa50c92c44287e33d15f1cd4c508b33ec96",
+    "action": "copied"
+  },
+  {
+    "source": "ppt.pdf",
+    "destination": "reports/original/presentation.pdf",
+    "sha256": "d828fd9b1cf9953633d7cbe8b76f1cb112fa72623aded80eea162598e8b34655",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/phase_3.pdf",
+    "destination": "reports/original/phase-3-oracle.pdf",
+    "sha256": "8218b7f8991a046f690aeba9d466e786e0de598c89464bcddd15a295316b381e",
+    "action": "copied"
+  },
+  {
+    "source": "phase_4/phase4.pdf",
+    "destination": "reports/original/phase-4-mongodb.pdf",
+    "sha256": "389935decf410b1d95ade04d939ae883b15ca2d2df233b866a75aac5dd5da03c",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/question1.png",
+    "destination": "archive/figures/question1.png",
+    "sha256": "35d1b03d3aa8395c5a0182949dc6a79e10eb9c824006a6b3df15bfd27e9f114c",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/question2.png",
+    "destination": "archive/figures/question2.png",
+    "sha256": "4f203977a281ef3a949d649ea64ed23bff994667a6cac1045d1d457aa911beb6",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/question3_boxplot.png",
+    "destination": "archive/figures/question3_boxplot.png",
+    "sha256": "0a0f614a186e4e4952ffc772387637ac18b2e38df0a176c02e9e085835801fb1",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/question3_scatter.png",
+    "destination": "archive/figures/question3_scatter.png",
+    "sha256": "7c878464004db222851ccb8db60fa27ce6660ee878310b8464ea4bb37ba4163d",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/main.tex",
+    "destination": "archive/phase-3-draft.tex",
+    "sha256": "af67eaf885ca0e2ace09533b256a8a542a65e439a341f31b7de25ba4e6727bcd",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/Droptables.sql",
+    "destination": "archive/scripts/original-schema.sql",
+    "sha256": "675cd60adf0858a4e29c772cfa3b4c0d5db4502cc9457ecd773a0a60317cf9d3",
+    "action": "copied"
+  },
+  {
+    "source": "phase_3/phase3.ipynb",
+    "destination": "archive/notebooks/phase3.ipynb",
+    "action": "connection strings anonymized; outputs cleared"
+  },
+  {
+    "source": "phase_3/phase3.py",
+    "destination": "archive/scripts/phase3.py",
+    "action": "connection strings anonymized"
+  },
+  {
+    "source": "phase_4/MongeDB data connection.ipynb",
+    "destination": "archive/notebooks/MongeDB-data-connection.ipynb",
+    "action": "connection strings anonymized; outputs cleared"
+  },
+  {
+    "source": "phase_4/phase4.ipynb",
+    "destination": "archive/notebooks/phase4.ipynb",
+    "action": "connection strings anonymized; outputs cleared"
+  },
+  {
+    "source": "phase_4/phase4.py",
+    "destination": "archive/scripts/phase4.py",
+    "action": "connection strings anonymized"
+  },
+  {
+    "source": "data_cleaning/rt_matching.py",
+    "destination": "scripts/match_01.py",
+    "action": "relative paths; original matching algorithm retained"
+  },
+  {
+    "source": "data_cleaning/match2.py",
+    "destination": "scripts/match_02.py",
+    "action": "relative paths; original matching algorithm retained"
+  },
+  {
+    "source": "data_cleaning/match3.py",
+    "destination": "scripts/match_03.py",
+    "action": "relative paths; original matching algorithm retained"
+  },
+  {
+    "source": "data_cleaning/match4.py",
+    "destination": "scripts/match_04.py",
+    "action": "relative paths; original matching algorithm retained"
+  }
+]
